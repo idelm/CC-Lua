@@ -1,5 +1,5 @@
 -- Configuration
-local range = 10  -- Range to monitor around the computer
+local range = 10  -- Range to monitor around the computer. Do ..10 for range within 10 block, do 10.. for range outside.
 local roleID = "611b8a85-c74c-49e0-9100-b578ff30e30d"  -- The role ID to manage
 
 -- Function to remove role for players within the range

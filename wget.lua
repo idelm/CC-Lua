@@ -1,22 +1,26 @@
--- Function to check players within a specific range
-function checkPlayersInRange()
-    -- Define the range to check (e.g., 10 blocks)
-    local range = 10
+-- Configuration
+local range = 10  -- Range to monitor around the computer
+local roleID = "611b8a85-c74c-49e0-9100-b578ff30e30d"  -- The role ID to manage
 
-    -- Get a list of players within the range
-    local players = commands.exec("execute as @a[distance=.."..range.."] if entity @s[nbt={Health:0.0}] run member @s addrole 611b8a85-c74c-49e0-9100-b578ff30e30d")
-
-    -- If any players are found within the range
-    if players then
-        for i, player in ipairs(players) do
-            -- Run the addrole command for each detected player
-            commands.exec("member "..player.." addrole 611b8a85-c74c-49e0-9100-b578ff30e30d")
-        end
-    end
+-- Function to remove role for players within the range
+function removeRoleInRange()
+    commands.exec("execute as @a[distance=.."..range.."] run member @s removerole " .. roleID)
 end
 
--- Main loop to continuously check for player deaths
+-- Function to add role for players outside the range
+function addRoleOutsideRange()
+    commands.exec("execute as @a[distance="..(range+1).."..] run member @s addrole " .. roleID)
+end
+
+-- Function to add role when a player dies within the range
+function addRoleOnDeathInRange()
+    commands.exec("execute as @a[distance=.."..range.."] if entity @s[nbt={Health:0.0}] run member @s addrole " .. roleID)
+end
+
+-- Main loop to continuously manage roles
 while true do
-    checkPlayersInRange()
+    removeRoleInRange()
+    addRoleOutsideRange()
+    addRoleOnDeathInRange()
     os.sleep(1)  -- Wait for 1 second before checking again
 end

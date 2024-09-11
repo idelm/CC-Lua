@@ -1,5 +1,5 @@
 -- Define the number of blocks to mine
-local blocksToMine = 100  -- Change this number to the desired number of blocks
+local blocksToMine = 1000  -- Change this number to the desired number of blocks
 local returnPosition = 0   -- Keeps track of how many blocks the Turtle has moved forward
 
 -- Function to check and handle fuel level
@@ -28,7 +28,7 @@ function depositItems()
     turtle.turnLeft()
     turtle.turnLeft()  -- Turn around to face the chest
 
-    for slot = 1, 14 do
+    for slot = 1, 14 do  -- Only deposit items from slots 1 to 14
         turtle.select(slot)
         turtle.drop()
     end
@@ -68,12 +68,12 @@ end
 
 -- Function to check if inventory is full
 function isInventoryFull()
-    for slot = 1, 14 do  -- Only check slots 1 to 14, ignoring slots 15 and 16 for torches
+    for slot = 1, 14 do  -- Check slots 1 to 14 only
         if turtle.getItemCount(slot) == 0 then
-            return false
+            return false  -- Found an empty slot, inventory is not full
         end
     end
-    return true
+    return true  -- All slots from 1 to 14 are full
 end
 
 -- Start of the mining process

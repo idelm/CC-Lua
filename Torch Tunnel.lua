@@ -39,18 +39,16 @@ end
 
 -- Function to place a torch
 function placeTorch()
-    -- First, try to place from slot 16
-    turtle.select(16)
-    if turtle.getItemCount(16) > 0 then
+    -- Check if slot 16 contains torches
+    if turtle.getItemDetail(16) and turtle.getItemDetail(16).name == "minecraft:torch" then
+        turtle.select(16)
+        turtle.placeDown()
+    elseif turtle.getItemDetail(15) and turtle.getItemDetail(15).name == "minecraft:torch" then
+        -- If slot 16 is empty or not a torch, try slot 15
+        turtle.select(15)
         turtle.placeDown()
     else
-        -- If slot 16 is empty, try slot 15
-        turtle.select(15)
-        if turtle.getItemCount(15) > 0 then
-            turtle.placeDown()
-        else
-            print("No torches left to place!")
-        end
+        print("No torches left to place!")
     end
 end
 
@@ -86,4 +84,30 @@ for i = 1, blocksToMine do
         return
     end
 
-   
+    returnPosition = returnPosition + 1  -- Keep track of the number of blocks moved forward
+
+    -- Place a torch every 9 blocks
+    if returnPosition % 9 == 0 then
+        placeTorch()
+    end
+
+    -- Check if the inventory is full
+    if turtle.getItemCount(16) > 0 then
+        print("Inventory full, returning to deposit items...")
+
+        -- Return to the starting point to deposit items
+        returnToStart()
+        depositItems()
+
+        -- Go back to the position where mining was stopped
+        goBackToPosition()
+    end
+
+    -- Check fuel level periodically
+    if not checkFuel() then
+        return
+    end
+end
+
+-- End of the script
+print("Mining complete!")

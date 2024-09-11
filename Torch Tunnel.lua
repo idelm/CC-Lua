@@ -1,6 +1,6 @@
 -- Define the number of blocks to mine
 local blocksToMine = 100  -- Change this number to the desired number of blocks
-local returnPosition = 0  -- Keeps track of how many blocks the Turtle has moved forward
+local returnPosition = 0   -- Keeps track of how many blocks the Turtle has moved forward
 
 -- Function to check and handle fuel level
 function checkFuel()
@@ -28,16 +28,30 @@ function depositItems()
     turtle.turnLeft()
     turtle.turnLeft()  -- Turn around to face the chest
 
-    for slot = 1, 16 do
+    for slot = 1, 14 do
         turtle.select(slot)
-        -- Keep torches (assumes torches are in slot 16)
-        if turtle.getItemDetail(slot) and turtle.getItemDetail(slot).name ~= "minecraft:torch" then
-            turtle.drop()
-        end
+        turtle.drop()
     end
 
     turtle.turnLeft()
     turtle.turnLeft()  -- Turn back around to resume mining
+end
+
+-- Function to place a torch
+function placeTorch()
+    -- First, try to place from slot 16
+    turtle.select(16)
+    if turtle.getItemCount(16) > 0 then
+        turtle.placeDown()
+    else
+        -- If slot 16 is empty, try slot 15
+        turtle.select(15)
+        if turtle.getItemCount(15) > 0 then
+            turtle.placeDown()
+        else
+            print("No torches left to place!")
+        end
+    end
 end
 
 -- Function to return to the starting position
@@ -72,31 +86,4 @@ for i = 1, blocksToMine do
         return
     end
 
-    returnPosition = returnPosition + 1  -- Keep track of the number of blocks moved forward
-
-    -- Place a torch every 9 blocks
-    if returnPosition % 9 == 0 then
-        turtle.select(16)  -- Assumes torches are in slot 16
-        turtle.placeDown()
-    end
-
-    -- Check if the inventory is full
-    if turtle.getItemCount(16) > 0 then
-        print("Inventory full, returning to deposit items...")
-
-        -- Return to the starting point to deposit items
-        returnToStart()
-        depositItems()
-
-        -- Go back to the position where mining was stopped
-        goBackToPosition()
-    end
-
-    -- Check fuel level periodically
-    if not checkFuel() then
-        return
-    end
-end
-
--- End of the script
-print("Mining complete!")
+   

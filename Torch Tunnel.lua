@@ -66,6 +66,16 @@ function goBackToPosition()
     end
 end
 
+-- Function to check if inventory is full
+function isInventoryFull()
+    for slot = 1, 14 do  -- Only check slots 1 to 14, ignoring slots 15 and 16 for torches
+        if turtle.getItemCount(slot) == 0 then
+            return false
+        end
+    end
+    return true
+end
+
 -- Start of the mining process
 if not checkFuel() then
     return
@@ -92,7 +102,7 @@ for i = 1, blocksToMine do
     end
 
     -- Check if the inventory is full
-    if turtle.getItemCount(16) > 0 then
+    if isInventoryFull() then
         print("Inventory full, returning to deposit items...")
 
         -- Return to the starting point to deposit items

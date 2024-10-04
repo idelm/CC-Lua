@@ -6,9 +6,8 @@ local height = 29  -- Number of blocks in the y direction
 -- Define the chest's position (relative to turtle's start position or global coords)
 local chestX, chestY, chestZ = 410, 64, -470 -- Adjust these coordinates to where the chest is located
 
--- Calculate fuel requirements based on movements
--- Each block movement uses 1 unit of fuel, and returning to the chest also uses fuel
-local function calculateFuelRequired()
+-- Function to calculate the total fuel required for the task
+function calculateFuelRequired()
     -- Total number of block movements in the working area
     local movementsPerLayer = (length * width) + (length + width - 2) * height
     -- Number of layers to clear
@@ -33,6 +32,18 @@ function checkFuel()
         return true
     else
         print("Insufficient fuel! Fuel required: " .. requiredFuel .. ", Current fuel: " .. currentFuel)
+        return false
+    end
+end
+
+-- Function to check if GPS is available
+function checkGPS()
+    local x, y, z = gps.locate(5) -- Tries to locate with a 5-second timeout
+    if x and y and z then
+        print("GPS is available. Position: X=" .. x .. " Y=" .. y .. " Z=" .. z)
+        return true
+    else
+        print("GPS is unavailable! Please ensure GPS towers are set up.")
         return false
     end
 end
@@ -98,8 +109,8 @@ function returnToChestAndDump(currX, currY, currZ)
 end
 
 -- Main script execution
-if checkFuel() then
-    -- Main loop to clear the area if fuel check is successful
+if checkGPS() and checkFuel() then
+    -- Main loop to clear the area if GPS and fuel checks are successful
     for h = 1, height do
         for i = 1, length do
             for j = 1, width do
@@ -135,4 +146,6 @@ if checkFuel() then
             turtle.up()
         end
     end
+else
+    print("GPS or fuel check failed. Exiting script.")
 end

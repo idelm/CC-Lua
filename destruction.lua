@@ -3,8 +3,8 @@ local length = 23  -- Number of blocks in the x direction
 local width = 37   -- Number of blocks in the z direction
 local height = 29  -- Number of blocks in the y direction
 
-local chestX, chestY, chestZ = 0, 0, 0 -- Set your chest's coordinates relative to the starting point
-local startX, startY, startZ = 0, 0, 0 -- Starting position for the turtle
+-- Define the chest's position (relative to turtle's start position or global coords)
+local chestX, chestY, chestZ = 410, 64, -470 -- Adjust these coordinates to where the chest is located
 
 -- Function to check if the turtle's inventory is full
 function isInventoryFull()
@@ -16,31 +16,66 @@ function isInventoryFull()
     return true  -- Inventory is full
 end
 
--- Function to return to the chest, dump items, and go back to work
-function returnToChestAndDump()
-    -- Save current position and direction (assumes turtle starts at chest and moves systematically)
-    local currentX, currentY, currentZ = gps.locate()  -- Get turtle's current coordinates
-    turtle.goTo(chestX, chestY, chestZ) -- Go back to the chest (you may need a custom goTo function or manually program movement)
+-- Function to move the turtle to a specific location (simple version assuming direct path)
+function goTo(x, y, z)
+    local currX, currY, currZ = gps.locate()  -- Get current position with GPS
     
+    -- Move vertically to the target Y level
+    while currY < y do
+        turtle.up()
+        currY = currY + 1
+    end
+    while currY > y do
+        turtle.down()
+        currY = currY - 1
+    end
+
+    -- Move along the X axis
+    while currX < x do
+        turtle.forward()
+        currX = currX + 1
+    end
+    while currX > x do
+        turtle.back()
+        currX = currX - 1
+    end
+
+    -- Move along the Z axis
+    while currZ < z do
+        turtle.forward()
+        currZ = currZ + 1
+    end
+    while currZ > z do
+        turtle.back()
+        currZ = currZ - 1
+    end
+end
+
+-- Function to return to the chest, dump items, and go back to work
+function returnToChestAndDump(currX, currY, currZ)
+    -- Move to the chest's location
+    goTo(chestX, chestY, chestZ)
+
     -- Dump all items into the chest
     for i = 1, 16 do
         turtle.select(i)
         turtle.drop()
     end
-    
+
     -- Return to the saved position and resume work
-    turtle.goTo(currentX, currentY, currentZ)
+    goTo(currX, currY, currZ)
 end
 
 -- Main loop to clear the area
 for h = 1, height do
     for i = 1, length do
         for j = 1, width do
-            turtle.digDown()  -- Digs the block below the turtle
+            turtle.digDown()   -- Digs the block below the turtle
 
             -- Check if the inventory is full after each dig
             if isInventoryFull() then
-                returnToChestAndDump()  -- Return to the chest and dump items
+                local currX, currY, currZ = gps.locate() -- Get current position before heading to chest
+                returnToChestAndDump(currX, currY, currZ) -- Go to chest and return
             end
 
             if j < width then

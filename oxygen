@@ -1,0 +1,21 @@
+-- Set up peripherals
+local monitor = peripheral.wrap("monitor_1")  -- Adjust this if your monitor has a different name
+
+-- Clear the monitor and set text scale
+monitor.clear()
+monitor.setTextScale(1.5)
+
+-- Display "WARNING" in red
+monitor.setTextColor(colors.red)
+monitor.setCursorPos(1, 2)  -- Adjust position as needed
+monitor.write("WARNING")
+
+-- Display the rest of the message in white
+monitor.setTextColor(colors.white)
+monitor.setCursorPos(1, 4)
+monitor.write("You are about to leave an oxygen-rich area.")
+monitor.setCursorPos(1, 5)
+monitor.write("Please ensure your oxygen tanks are full.")
+
+-- Reset text color
+monitor.setTextColor(colors.white)

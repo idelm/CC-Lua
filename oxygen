@@ -1,10 +1,4 @@
--- Redirect output to the monitor
-if peripheral.isPresent("monitor_bottom") then
-    term.redirect(peripheral.wrap("monitor_bottom"))
-else
-    print("Monitor not found on the bottom!")
-    return
-end
+-- oxygen.lua
 
 -- Clear the monitor and set text scale
 term.clear()
@@ -22,5 +16,5 @@ print("You are about to leave an oxygen-rich area.")
 term.setCursorPos(1, 5)
 print("Please ensure your oxygen tanks are full.")
 
--- Reset output back to terminal
-term.redirect(term.native())
+-- Reset text color
+term.setTextColor(colors.white)
